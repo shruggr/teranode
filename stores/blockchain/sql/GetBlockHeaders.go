@@ -122,14 +122,14 @@ func (s *SQL) GetBlockHeaders(ctx context.Context, blockHashFrom *chainhash.Hash
 					UNION ALL
 					SELECT bb.id, bb.parent_id, bb.height
 					FROM blocks bb
-					JOIN ChainBlocks cb ON bb.id = cb.parent_id
+					JOIN ChainBlocks cb ON bb.parent_id = cb.id
 					WHERE bb.id != cb.id
 				)
 				SELECT id FROM ChainBlocks
 				LIMIT $2
 			)
 		)
-		ORDER BY height DESC
+		ORDER BY height ASC
 	`
 
 	rows, err := s.db.QueryContext(ctx, q, blockHashFrom[:], numberOfHeaders)
